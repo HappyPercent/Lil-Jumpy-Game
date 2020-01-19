@@ -33,6 +33,14 @@ body {
     text-align: center;
 }
 
+.score {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    color: #fff;
+    font-size: 40px;
+}
+
 .bold {
     text-transform: uppercase;
     font-weight: 700;

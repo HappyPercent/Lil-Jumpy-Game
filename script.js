@@ -16,14 +16,15 @@ const gameSpeed = 10; //ms one tick
 const jumpAnimationSpeed = 500; //ms
 const jumpHeight = 300; //px
 const jumpDuration = 500; //ms
-const obstacleMovingDistance = 5; //px per tick
-const minDistanceBetweenObstacles = 400; //px
-const distanceOfNewObstacleCreation = 800; //px
+const obstacleMovingDistance = 6; //px per tick
+const minDistanceBetweenObstacles = 350; //px
+const distanceOfNewObstacleCreation = 600; //px
 let jumpAvaliable = true;
 let stopGame = false;
 
 function startGame() {
     stopGame = false;
+    document.querySelector('.score').innerHTML = 0;
 
     document.querySelectorAll('.obstacle').forEach(elem => {elem.parentNode.removeChild(elem)});
     let newObstacle = document.createElement('div');
@@ -64,17 +65,28 @@ function gameTick() {
 }
 
 function moveAllObstacles() {
+
+    const currentScore = +document.querySelector('.score').innerHTML;
+    const playerElem = document.querySelector('.player');
+    const playerLeftX = playerElem.getBoundingClientRect().x;
+
     document.querySelectorAll('.obstacle').forEach((obstacle) => {
         const currentCoordinate = +String(obstacle.style.right).replace('px',"");
         const finalCoordonate = obstacleMovingDistance + currentCoordinate;
         const obstacleWidth = obstacle.offsetWidth;
-        const windowWidth = document.querySelector('.container').offsetWidth
+        const windowWidth = document.querySelector('.container').offsetWidth;
+        const obstacleCurrentRightX = obstacle.getBoundingClientRect().x + obstacleWidth;
+        const obstacleFinalRightX = obstacleCurrentRightX - obstacleMovingDistance;
 
         obstacle.style.right = finalCoordonate + 'px';
-
         if(finalCoordonate > windowWidth + obstacleWidth) {
             obstacle.parentNode.removeChild(obstacle);
         }
+
+        if(obstacleCurrentRightX > playerLeftX && obstacleFinalRightX <= playerLeftX) {
+            document.querySelector('.score').innerHTML = currentScore + 1;
+        }
+
     });
 }
 
@@ -102,7 +114,7 @@ function createNewObstacles() {
 }
 
 function checkForCrash() {
-    const playerElem = document.querySelector('.player')
+    const playerElem = document.querySelector('.player');
     const playerRightX = playerElem.getBoundingClientRect().x + playerElem.getBoundingClientRect().width;
     const playerBottomY = playerElem.getBoundingClientRect().y + playerElem.getBoundingClientRect().height;
     const playerLeftX = playerElem.getBoundingClientRect().x;
